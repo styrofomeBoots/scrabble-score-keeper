@@ -6,7 +6,12 @@
         {{ name }}: {{ value }}
       </span>
     </div>
-    <Word v-for="id in playerWords[player]" :key="id" :id="id" />
+    <Word
+      v-for="id in playerWords[player]"
+      :key="id"
+      :id="id"
+      :player="player"
+    />
     <input type="text" @keyup.enter="submitWord" v-model="word" />
   </div>
 </template>
@@ -37,10 +42,8 @@ export default {
         word: uprWord,
       });
       if (isWord) {
-        console.log(isWord);
         this.word = "";
       } else {
-        console.log(isWord);
         this.word = "";
       }
     },

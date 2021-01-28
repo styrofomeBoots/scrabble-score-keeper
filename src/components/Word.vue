@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="wordMulti">Word Multiplier</label>
-    <select name="wordMulti" id="multi">
+    <select name="wordMulti" id="multi" @change="changeMultiplier($event)">
       <option value="1">x1</option>
       <option value="2">x2</option>
       <option value="1">x3</option>
@@ -13,6 +13,7 @@
         :id="id"
         :letter="letter"
         :index="index"
+        :player="player"
         :value="letters[letter].value"
       />
     </div>
@@ -27,12 +28,19 @@ import { mapGetters, mapActions } from "vuex";
 // ========== CLASS ==========
 export default {
   name: "Word",
-  props: ["id"],
+  props: ["id", "player"],
   components: {
     Letter,
   },
   methods: {
-    ...mapActions([""]),
+    ...mapActions(["changeWordMultiplier"]),
+    changeMultiplier(event) {
+      this.changeLetterMultiplier({
+        multi: event.target.value,
+        id: this.id,
+        player: this.player,
+      });
+    },
   },
   computed: mapGetters(["words", "letters"]),
 };

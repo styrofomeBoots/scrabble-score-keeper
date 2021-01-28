@@ -4,18 +4,31 @@
       <span class="letter">{{ letter }}</span>
       <span class="value">{{ value }}</span>
     </div>
-    <select>
+    <select @change="changeMultiplier($event)">
       <option value="1">x1</option>
       <option value="2">x2</option>
-      <option value="1">x3</option>
+      <option value="3">x3</option>
     </select>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "Letter",
-  props: ["letter", "id", "value", "index"],
+  props: ["letter", "id", "index", "player", "value"],
+  methods: {
+    ...mapActions(["changeLetterMultiplier"]),
+    changeMultiplier(event) {
+      this.changeLetterMultiplier({
+        multi: event.target.value,
+        id: this.id,
+        letter: this.letter,
+        index: this.index,
+        player: this.player,
+      });
+    },
+  },
   created() {},
 };
 </script>

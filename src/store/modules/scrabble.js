@@ -4,7 +4,7 @@
 // ---------- IMPORTS -----------
 // ==============================
 
-import $ from 'jquery';
+import $, { data } from 'jquery';
 
 // ===========================
 // ---------- STATE ----------
@@ -106,25 +106,51 @@ const actions = {
     if (isWord) {
       let currentId = state.wordId;                                            // the word's id
       let multis = {};                                                         // letter multiplier object
-      let wordMulti = 1;                                                       // word multiplier (defaults to 1)
+      let multi = 1;                                                       // word multiplier (defaults to 1)
       let score = 0;                                                           // score integer
       Array.from(data.word).forEach((el, index) => {                           // loop over the letters in the word
         multis[`${index}-${el}`] = 1;                                          // multis object is given the index and letter along with a default multi of 1
-        score += state.scrabbleLetters[el].value;                              // looks up the value for the letter and adds it to the score
       });
       let wordScore = {                                                        // creates an object with necessary info to add to the player
         word: data.word,
         multis,
-        wordMulti,
+        multi,
         score,
       };
       commit('addWord', { player: data.player, currentId, wordScore });        // adds word to word object and player word list
       commit('incrementWordId');                                               // increments the word id by 1
+      let newScore = calculateWordScore(currentId);
+      commit('updateWordScore', newScore);
+      let newStats = calculateAllPlayerStats(data.player);
+      console.log(newStats);
+      commit('updatePlayerStats', newStats);
       return true
     } else {
       return false
     }
-  }
+  },
+
+  changeLetterMultiplier({ commit }, data) {
+    let multiUpdate = {
+      multiIndex: `${data.index}-${data.letter}`,
+      id: data.id,
+      newMulti: data.multi,
+    };
+    commit('updateLetterMultis', multiUpdate);
+    let newScore = calculateWordScore(data.id);
+    commit('updateWordScore', newScore);
+    let newStats = calculateAllPlayerStats(data.player);
+    commit('updatePlayerStats', newStats);
+  },
+
+  changeWordMultiplier({ commit }, data) {
+    commit('updateWordMulti', data);
+    let newScore = calculateWordScore(data.id);
+    commit('updateWordScore', newScore);
+    let newStats = calculateAllPlayerStats(data.player);
+    commit('updatePlayerStats', newStats);
+  },
+
 };
 
 // ========== MUTATIONS ===========
@@ -153,6 +179,29 @@ const mutations = {
   addWord: (state, data) => {
     state.wordList[data.player].push(data.currentId);
     state.words[data.currentId] = data.wordScore;
+  },
+
+  // UPDATE LETTER MULTIPLIERS
+  //   updates the letter multiplier within a word
+  updateLetterMultis: (state, data) => {
+    state.words[data.id].multis[data.multiIndex] = data.newMulti;
+  },
+
+  // UPDATE WORD MULTIPLIER
+  //   updates word multiplier for a word
+  updateWordMulti: (state, data) => {
+    state.words[data.id].wordMulti = data.multi;
+  },
+
+  // UPDATE WORD SCORE
+  //   updates the score of a word for a player
+  updateWordScore: (state, data) => {
+    state.words[data.id].score = data.wordScore
+  },
+
+  // UPDATE PLAYER STATS
+  updatePlayerStats: (state, data) => {
+    state.playerScores[data.player] = data.stats
   }
 };
 
@@ -160,21 +209,21 @@ const mutations = {
 // ---------- HELPER FUNCTIONS ----------
 // ======================================
 
-// makes a get request to scrabblewordfinder.org with the submitted word
-// the request returns a JSON object of the pages html
-// there is a div in the html that is green if the word is accepted and red if not
-// based on the color being red or green the function returns true or false
+// CHECK WORD
+//   makes a get request to scrabblewordfinder.org with the submitted word
+//   the request returns a JSON object of the pages html
+//   there is a div in the html that is green if the word is accepted and red if not
+//   based on the color being red or green the function returns true or false
 const checkWord = (word) => {
-  console.log(word);
   return new Promise(resolve => {
     $.getJSON('http://www.whateverorigin.org/get?url='
       + encodeURIComponent(`https://scrabblewordfinder.org/dictionary/${word}`)
       + '&callback=?',
       function (data) {
-        let checkPortion = data.contents.split(`check_dict_page`)[1];  // split the html near the pertinent div and take 2nd half
-        let necessaryPortion = checkPortion.substring(0, 90)           // starts a formatting chain for a small portion of the half
-          .split(' ').join('')                                         // remove blank spaces - probably not necessary
-          .split(/\r?\n/).join('');                                    // remove line breaks  - probably not necessary
+        let checkPortion = data.contents.split(`check_dict_page`)[1];          // split the html near the pertinent div and take 2nd half
+        let necessaryPortion = checkPortion.substring(0, 90)                   // starts a formatting chain for a small portion of the half
+          .split(' ').join('')                                                 // remove blank spaces - probably not necessary
+          .split(/\r?\n/).join('');                                            // remove line breaks  - probably not necessary
         if (necessaryPortion.includes('green')) {
           resolve(true)
         } else {
@@ -184,6 +233,50 @@ const checkWord = (word) => {
     )
   })
 };
+
+// CALCULATE WORD SCORE
+//   loops through the letters of a word and calculates score
+//     if wordId is null this function is being used on wordAdd
+const calculateWordScore = (wordId) => {
+  let word = state.words[wordId].multis;
+  let wordMulti = state.words[wordId].multi;
+  let wordScore = 0;
+  Object.entries(word).forEach(([key, value]) => {
+    let letter = key.split('-')[1];
+    let multi = value;
+    let letterValue = state.scrabbleLetters[letter].value;
+    wordScore += multi * letterValue;
+  })
+  wordScore = wordScore * wordMulti;
+  return { id: wordId, wordScore };
+}
+
+const calculateAllPlayerStats = (player) => {
+  let playerWords = state.wordList[player];
+  let totalWords = playerWords.length;
+  let totalLetters = 0;
+  let totalScore = 0;
+  let highestScore = 0;
+  let averageScore = 0;
+  let longestWord = 0;
+  let averageWord = 0;
+  playerWords.forEach(el => {
+    let wordLength = state.words[el].word.length;
+    let wordScore = state.words[el].score;
+    totalScore += wordScore;
+    totalLetters += wordLength;
+    if (wordScore > highestScore) { highestScore = wordScore }
+    if (wordLength > longestWord) { longestWord = wordLength }
+  })
+  averageScore = totalScore / totalWords;
+  averageWord = totalLetters / totalWords;
+  return {
+    player: player,
+    stats: {
+      totalWords, totalScore, highestScore, averageScore, longestWord, averageWord
+    }
+  }
+}
 
 // export the state to be used in the store
 export default {
