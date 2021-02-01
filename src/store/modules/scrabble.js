@@ -5,6 +5,7 @@
 // ==============================
 
 import $, { data } from 'jquery';
+import Vue from 'vue';
 
 // ===========================
 // ---------- STATE ----------
@@ -122,9 +123,8 @@ const actions = {
       let newScore = calculateWordScore(currentId);
       commit('updateWordScore', newScore);
       let newStats = calculateAllPlayerStats(data.player);
-      console.log(newStats);
       commit('updatePlayerStats', newStats);
-      return true
+      return newStats
     } else {
       return false
     }
@@ -137,9 +137,17 @@ const actions = {
       newMulti: data.multi,
     };
     commit('updateLetterMultis', multiUpdate);
-    let newScore = calculateWordScore(data.id);
-    commit('updateWordScore', newScore);
     let newStats = calculateAllPlayerStats(data.player);
+    commit('updatePlayerStats', newStats);
+  },
+
+  changeScore({ commit }, id) {
+    let newScore = calculateWordScore(id);
+    commit('updateWordScore', newScore);
+  },
+
+  changeStats({ commit }, player) {
+    let newStats = calculateAllPlayerStats(player);
     commit('updatePlayerStats', newStats);
   },
 
@@ -201,7 +209,15 @@ const mutations = {
 
   // UPDATE PLAYER STATS
   updatePlayerStats: (state, data) => {
-    state.playerScores[data.player] = data.stats
+    console.log(state.playerScores[data.player]);
+    // state.playerScores[data.player] = {
+    //   ...data.stats
+    // };
+    Vue.set(state, state.playerScores, {});
+    console.log(state.playerScores[data.player]);
+    Vue.set(state.playerScores, [data.player], {});
+    Vue.set(state.playerScores, [data.player], data.stats);
+    console.log(state.playerScores[data.player]);
   }
 };
 

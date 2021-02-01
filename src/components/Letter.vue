@@ -18,7 +18,7 @@ export default {
   name: "Letter",
   props: ["letter", "id", "index", "player", "value"],
   methods: {
-    ...mapActions(["changeLetterMultiplier"]),
+    ...mapActions(["changeLetterMultiplier", "changeScore", "changeStats"]),
     changeMultiplier(event) {
       this.changeLetterMultiplier({
         multi: event.target.value,
@@ -27,6 +27,8 @@ export default {
         index: this.index,
         player: this.player,
       });
+      this.changeScore(this.id);
+      this.changeStats(this.player);
     },
   },
   created() {},
