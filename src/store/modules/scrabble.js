@@ -4,7 +4,7 @@
 // ---------- IMPORTS -----------
 // ==============================
 
-import $, { data } from 'jquery';
+import $ from 'jquery';
 import Vue from 'vue';
 
 // ===========================
@@ -139,6 +139,7 @@ const actions = {
     commit('updateLetterMultis', multiUpdate);
     let newStats = calculateAllPlayerStats(data.player);
     commit('updatePlayerStats', newStats);
+    return newStats
   },
 
   changeScore({ commit }, id) {
@@ -213,10 +214,8 @@ const mutations = {
     // state.playerScores[data.player] = {
     //   ...data.stats
     // };
-    Vue.set(state, state.playerScores, {});
-    console.log(state.playerScores[data.player]);
-    Vue.set(state.playerScores, [data.player], {});
-    Vue.set(state.playerScores, [data.player], data.stats);
+    // Vue.set(state.playerScores, [data.player], data.stats);
+    state.playerScores[data.player] = data.stats;
     console.log(state.playerScores[data.player]);
   }
 };

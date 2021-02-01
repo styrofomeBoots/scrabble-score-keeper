@@ -2,7 +2,7 @@
   <div>
     <h2>{{ player }}</h2>
     <div class="player-scores">
-      <span v-for="(value, name) in playerScore" :key="name">
+      <span v-for="(value, name) in playerScore[player]" :key="name">
         {{ name }}: {{ value }}
       </span>
     </div>
@@ -31,7 +31,6 @@ export default {
   data() {
     return {
       word: "",
-      playerSore: {},
     };
   },
   methods: {
@@ -45,7 +44,6 @@ export default {
       console.log(isWord);
       if (isWord) {
         this.word = "";
-        this.playerScore = isWord.stats;
       } else {
         this.word = "";
       }

@@ -35,7 +35,7 @@ export default {
   methods: {
     ...mapActions(["changeWordMultiplier"]),
     changeMultiplier(event) {
-      this.changeLetterMultiplier({
+      this.changeWordMultiplier({
         multi: event.target.value,
         id: this.id,
         player: this.player,
