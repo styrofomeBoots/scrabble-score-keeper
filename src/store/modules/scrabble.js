@@ -186,7 +186,9 @@ const mutations = {
   //   adds a word ID to the players word list
   //   adds the word score object to the words object
   addWord: (state, data) => {
-    state.wordList[data.player].push(data.currentId);
+    // state.wordList[data.player].push(data.currentId);
+    const newIds = [...state.wordList[data.player], data.currentId];
+    Vue.set(state.wordList, data.player, newIds);
     state.words[data.currentId] = data.wordScore;
   },
 
@@ -211,11 +213,8 @@ const mutations = {
   // UPDATE PLAYER STATS
   updatePlayerStats: (state, data) => {
     console.log(state.playerScores[data.player]);
-    // state.playerScores[data.player] = {
-    //   ...data.stats
-    // };
-    // Vue.set(state.playerScores, [data.player], data.stats);
-    state.playerScores[data.player] = data.stats;
+    state.playerScores = Object.assign({}, state.playerScores, { [data.player]: {} });
+    state.playerScores[data.player] = Object.assign({}, state.playerScores[data.player], data.stats);
     console.log(state.playerScores[data.player]);
   }
 };
