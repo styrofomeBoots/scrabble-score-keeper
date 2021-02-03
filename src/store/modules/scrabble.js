@@ -131,7 +131,6 @@ const actions = {
   },
 
   changeLetterMultiplier({ commit }, data) {
-    console.log(data);
     let multiUpdate = {
       multiIndex: `${data.index}-${data.letter}`,
       id: data.id,
@@ -143,16 +142,6 @@ const actions = {
     let newStats = calculateAllPlayerStats(data.player);
     commit('updatePlayerStats', newStats);
     return newStats
-  },
-
-  changeScore({ commit }, id) {
-    let newScore = calculateWordScore(id);
-    commit('updateWordScore', newScore);
-  },
-
-  changeStats({ commit }, player) {
-    let newStats = calculateAllPlayerStats(player);
-    commit('updatePlayerStats', newStats);
   },
 
   changeWordMultiplier({ commit }, data) {
@@ -209,7 +198,6 @@ const mutations = {
   // UPDATE WORD SCORE
   //   updates the score of a word for a player
   updateWordScore: (state, data) => {
-    console.log(data);
     state.words[data.id].score = data.wordScore
   },
 

@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <md-toolbar>
+      <h3 class="md-title">Scrabble Scorer</h3>
+    </md-toolbar>
+    <br />
     <Players />
   </div>
 </template>
@@ -15,15 +19,8 @@ export default {
 </script>
 
 <style>
-@font-face {
-  font-family: "Eurostile";
-  src: local("Eurostile"),
-    url("./assets/fonts/Eurostile.ttf") format("truetype");
-}
-
 html,
 body {
   background-color: #add8e6;
-  font-family: "Eurostile", Helvetica, Arial;
 }
 </style>

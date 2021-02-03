@@ -1,8 +1,12 @@
 <template>
   <div class="letter-div">
     <div class="tile">
-      <span class="letter">{{ letter }}</span>
-      <span class="value">{{ value }}</span>
+      <span class="letter"
+        ><strong>{{ letter }}</strong></span
+      >
+      <span class="value"
+        ><strong>{{ value }}</strong></span
+      >
     </div>
     <select @change="changeMultiplier($event)">
       <option value="1">x1</option>
@@ -18,7 +22,7 @@ export default {
   name: "Letter",
   props: ["letter", "id", "index", "player", "value"],
   methods: {
-    ...mapActions(["changeLetterMultiplier", "changeScore", "changeStats"]),
+    ...mapActions(["changeLetterMultiplier"]),
     changeMultiplier(event) {
       this.changeLetterMultiplier({
         multi: event.target.value,
@@ -29,12 +33,19 @@ export default {
       });
     },
   },
-  created() {},
 };
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "Eurostile";
+  src: local("Eurostile"),
+    url("../assets/fonts/Eurostile.ttf") format("truetype");
+}
+
 .tile {
+  margin-left: 1px;
+  margin-right: 1px;
   display: flex;
   background-color: #dcb88b;
   height: 50px;
@@ -49,13 +60,15 @@ export default {
 }
 
 .letter {
+  font-family: "Eurostile", Helvetica, Arial;
   font-size: 30px;
 }
 
 .value {
+  font-family: "Eurostile", Helvetica, Arial;
   font-size: 10px;
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 4px;
+  right: 6px;
 }
 </style>

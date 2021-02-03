@@ -45,6 +45,7 @@ export default {
 }
 
 .player {
+  margin-top: 5px;
   border: 1px;
   border-color: black;
   border-style: solid;
