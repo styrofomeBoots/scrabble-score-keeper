@@ -36,12 +36,10 @@ export default {
   methods: {
     ...mapActions(["addWord"]),
     async submitWord() {
-      let uprWord = this.word.toUpperCase();
       let isWord = await this.addWord({
         player: this.player,
-        word: uprWord,
+        word: this.word.toUpperCase(),
       });
-      console.log(isWord);
       if (isWord) {
         this.word = "";
       } else {

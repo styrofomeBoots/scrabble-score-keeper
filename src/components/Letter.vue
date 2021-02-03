@@ -27,8 +27,6 @@ export default {
         index: this.index,
         player: this.player,
       });
-      this.changeScore(this.id);
-      this.changeStats(this.player);
     },
   },
   created() {},

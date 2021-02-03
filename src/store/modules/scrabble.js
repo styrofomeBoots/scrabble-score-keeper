@@ -131,12 +131,15 @@ const actions = {
   },
 
   changeLetterMultiplier({ commit }, data) {
+    console.log(data);
     let multiUpdate = {
       multiIndex: `${data.index}-${data.letter}`,
       id: data.id,
       newMulti: data.multi,
     };
     commit('updateLetterMultis', multiUpdate);
+    let newScore = calculateWordScore(data.id);
+    commit('updateWordScore', newScore);
     let newStats = calculateAllPlayerStats(data.player);
     commit('updatePlayerStats', newStats);
     return newStats
@@ -186,7 +189,6 @@ const mutations = {
   //   adds a word ID to the players word list
   //   adds the word score object to the words object
   addWord: (state, data) => {
-    // state.wordList[data.player].push(data.currentId);
     const newIds = [...state.wordList[data.player], data.currentId];
     Vue.set(state.wordList, data.player, newIds);
     state.words[data.currentId] = data.wordScore;
@@ -201,21 +203,20 @@ const mutations = {
   // UPDATE WORD MULTIPLIER
   //   updates word multiplier for a word
   updateWordMulti: (state, data) => {
-    state.words[data.id].wordMulti = data.multi;
+    state.words[data.id].multi = data.multi;
   },
 
   // UPDATE WORD SCORE
   //   updates the score of a word for a player
   updateWordScore: (state, data) => {
+    console.log(data);
     state.words[data.id].score = data.wordScore
   },
 
   // UPDATE PLAYER STATS
   updatePlayerStats: (state, data) => {
-    console.log(state.playerScores[data.player]);
     state.playerScores = Object.assign({}, state.playerScores, { [data.player]: {} });
     state.playerScores[data.player] = Object.assign({}, state.playerScores[data.player], data.stats);
-    console.log(state.playerScores[data.player]);
   }
 };
 

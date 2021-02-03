@@ -4,7 +4,7 @@
     <select name="wordMulti" id="multi" @change="changeMultiplier($event)">
       <option value="1">x1</option>
       <option value="2">x2</option>
-      <option value="1">x3</option>
+      <option value="3">x3</option>
     </select>
     <div class="word">
       <Letter
@@ -49,30 +49,5 @@ export default {
 <style scoped>
 .word {
   display: flex;
-}
-
-.tile {
-  display: flex;
-  background-color: #dcb88b;
-  height: 50px;
-  width: 50px;
-  border-radius: 5px;
-  border-color: #d0a97d;
-  border-style: solid;
-  border-width: 2px;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.letter {
-  font-size: 30px;
-}
-
-.value {
-  font-size: 10px;
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
 }
 </style>
