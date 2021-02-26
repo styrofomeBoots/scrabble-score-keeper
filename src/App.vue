@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <md-toolbar>
-      <h3 class="md-title">Scrabble Scorer</h3>
-    </md-toolbar>
     <br />
     <Players />
   </div>
